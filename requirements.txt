@@ -1,2 +1,9 @@
-qdrant-client >= 1.8.2
-python-dotenv >= 1.0.1
+opencv-python
+onnxruntime
+onxx
+requests
+tqdm
+scikit-image
+albumentations
+insightface
+filterpy

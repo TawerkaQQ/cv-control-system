@@ -4,7 +4,7 @@ import cv2
 
 
 from python_package.insightface import model_zoo
-from qdrant_client import QdrantClient
+# from qdrant_client import QdrantClient
 from sort import Sort
 
 
@@ -18,7 +18,7 @@ def parse_args():
 
 args = parse_args()
 
-client = QdrantClient("localhost", port=6333)
+# client = QdrantClient("localhost", port=6333)
 
 detector = model_zoo.get_model(args.detector)
 detector.prepare(ctx_id=0, input_size=(640, 640))
@@ -28,7 +28,7 @@ handler.prepare(ctx_id=0)
 
 mot_tracker = Sort()
 
-rtsp_url = 'url'
+rtsp_url = "rtsp://admin:darviqR2QLion@10.131.63.120:554/ISAPI/Streaming/Channels/101"
 cap = cv2.VideoCapture(args.input)
 
 
@@ -81,13 +81,13 @@ def main():
             # print(emb) show emb
 
             # search emb and
-            search_result = client.search(
-                collection_name="skb_workers", query_vector=emb, limit=1
-            )
+            # search_result = client.search(
+            #     collection_name="skb_workers", query_vector=emb, limit=1
+            # )
 
             # show result
-            if search_result[0].score > 150:
-                print(search_result)
+            # if search_result[0].score > 150:
+            #     print(search_result)
 
             # show all crop image
             cv2.imshow(f'crop img{i}', wraped_img)
@@ -98,11 +98,11 @@ def main():
             end_point = (((det[bbox])[2]).astype(int), ((det[bbox])[3]).astype(int))
             cv2.rectangle(frame, start_point, end_point, (0, 255, 0), 2)
 
-        # for face in range(len(landmarks)):
-        #     for marks in range(len(landmarks[face])):
-        #         x = int(landmarks[face][marks][0])
-        #         y = int(landmarks[face][marks][1])
-        #         cv2.circle(frame, (x, y), radius=4, color=(0, 0, 255), thickness=-1)
+        for face in range(len(landmarks)):
+            for marks in range(len(landmarks[face])):
+                x = int(landmarks[face][marks][0])
+                y = int(landmarks[face][marks][1])
+                cv2.circle(frame, (x, y), radius=4, color=(0, 0, 255), thickness=-1)
 
         cv2.imshow('Face Detection', frame)
 

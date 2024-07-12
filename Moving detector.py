@@ -6,10 +6,8 @@ import numpy as np
 
 
 #Default RTSP stream url
-RTSP_URL = 'url'
+RTSP_URL = 'rtsp://admin:darviqR2QLion@10.131.63.120:554/ISAPI/Streaming/Channels/101'
 FPS = 30
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', type=str, default=RTSP_URL)
@@ -54,9 +52,8 @@ def main() -> None:
 
             # Apply background subtraction
             fg_mask = backSub.apply(frame)
-
-            # add threshold to mask (to avoid shadows)
-            retval, mask_thresh = cv2.threshold(fg_mask, 180, 255, cv2.THRESH_BINARY)
+            #add threshold to mask (to avoid shadows)
+            retval, mask_thresh = cv2.threshold( fg_mask, 180, 255, cv2.THRESH_BINARY)
 
             # Apply erosion (to avoid blue points)
             mask_eroded = cv2.morphologyEx(mask_thresh, cv2.MORPH_OPEN, kernel)
@@ -65,8 +62,9 @@ def main() -> None:
             if counter > args.threshold:
                 writer.write(frame)
 
+
             if args.show:
-                mask_eroded = cv2.resize(mask_eroded, (800, 600))
+                mask_eroded = cv2.resize(mask_eroded, (800,600))
                 cv2.imshow('Frame_final', mask_eroded)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
@@ -81,7 +79,6 @@ def main() -> None:
         cv2.destroyAllWindows()
 
     print("The video was successfully saved")
-
 
 if __name__ == '__main__':
     main()
