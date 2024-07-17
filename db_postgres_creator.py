@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 
-class DbConnector:
+class Db_connector:
     def __init__(self, db_name: str, user: str, password: str, host: str):
         self.db_name = db_name
         self.user = user
@@ -31,7 +31,7 @@ class DbConnector:
                 cursor.close()
         connector.close()
         print("Successfully transaction")
-        return None
+        return self
 
     def add_user(self, connector, user_id, user_name: str,):
         with connector:
@@ -44,7 +44,7 @@ class DbConnector:
                 cursor.close()
         connector.close()
         print("Successfully add new user")
-        return None
+        return self
 
     def add_input_log(self, connector, id):
         with connector:
@@ -57,7 +57,7 @@ class DbConnector:
                 cursor.close()
         connector.close()
         print("Successfully add new log")
-        return None
+        return self
 
     def add_output_log(self, connector, id):
         with connector:
@@ -65,15 +65,30 @@ class DbConnector:
                 cursor.execute(f'''
                 UPDATE logs 
                 SET output_time = '{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                work_time = (output_time - input_time)
-                WHERE id = '{id}';
-                
+                work_time = (SELECT output_time - input_time FROM logs WHERE id = '{id}')
+                WHERE id ='{id}';
                             ''')
+
+                connector.commit()
+
+                cursor.close()
+        self.update_work_time(connector, id)
+        connector.close()
+
+        print("Successfully update log")
+        return self
+
+    def update_work_time(self, connector, id):
+        with connector:
+            with connector.cursor() as cursor:
+                cursor.execute(f'''UPDATE logs
+                                SET work_time= (output_time - input_time) WHERE id = '{id}';
+                                    ''')
                 connector.commit()
                 cursor.close()
+
         connector.close()
-        print("Successfully update log")
-        return None
+        return self
 
 
 if __name__ == '__main__':
@@ -85,6 +100,14 @@ if __name__ == '__main__':
     db_pass = os.getenv('db_pass')
     host = os.getenv('host')
 
-    db = DbConnector(db_name, user, db_pass, host)
+    db = Db_connector(db_name, user, db_pass, host)
     conn = db.connect_to_db()
+    # db.add_input_log(conn, '8')
+    db.add_output_log(conn, '8')
+    # id = 4
+    # db.execute(conn, f'''UPDATE logs
+    #                 SET work_time= (output_time - input_time)
+    #                     WHERE id = '{id}';
+    #                     ''')
+
 
