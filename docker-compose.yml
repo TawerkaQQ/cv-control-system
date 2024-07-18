@@ -3,39 +3,42 @@ version: "3"
 services:
 
   db_qdrant:
-    container_name: qdrant
+    container_name: qdrant_compose
     image: qdrant/qdrant
     ports:
-      - "6333"
+      - "6333:6333"
     volumes:
      - "./qdrant_storage:/qdrant/storage"
 
   db_postgresql:
-    container_name: postgres1
+    env_file:
+      - ./.env
+    container_name: postgres_compose
     image: postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: db_pass
-      POSTGRES_DB: db_name
-      HOST: host
+      POSTGRES_USER: ${user}
+      POSTGRES_PASSWORD: ${db_pass}
+      POSTGRES_DB: ${db_name}
+      HOST: ${host}
     ports:
-      - "5432"
-    networks:
-      - postgres
+      - "5432:5432"
+#    networks:
+#      - postgres
     volumes:
       - "/home/tawerka/docker/volumes/postgres:/postgresql/data"
 
   pg_admin:
-    container_name: pg_admin
+    env_file:
+      - ./.env
+    container_name: pg_admin_compose
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: PGADMIN_DEFAULT_EMAIL_ENV
-      PGADMIN_DEFAULT_PASSWORD: PGADMIN_DEFAULT_PASSWORD_ENV
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL_ENV}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD_ENV}
     ports:
       - "5050:80"
-    networks:
-      - postgres
+#    networks:
+#      - postgres
     depends_on:
       - db_postgresql
 

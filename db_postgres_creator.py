@@ -102,12 +102,4 @@ if __name__ == '__main__':
 
     db = Db_connector(db_name, user, db_pass, host)
     conn = db.connect_to_db()
-    # db.add_input_log(conn, '8')
-    db.add_output_log(conn, '8')
-    # id = 4
-    # db.execute(conn, f'''UPDATE logs
-    #                 SET work_time= (output_time - input_time)
-    #                     WHERE id = '{id}';
-    #                     ''')
-
 
