@@ -13,7 +13,7 @@ docker pull qdrant/qdrant
 
 Первичный запуск контейнера с Qdrant:
 
-```python
+```bash
 docker run -p 6333:6333 -p 6334:6334 \
     -v $(pwd)/qdrant_storage:/qdrant/storage:z \
     qdrant/qdrant
@@ -21,7 +21,7 @@ docker run -p 6333:6333 -p 6334:6334 \
 
 Последующие запуски образа:
 
-```python
+```bash
 docker run -p 6333:6333 qdrant/qdrant (запускать без venv)
 ```
 
@@ -36,7 +36,7 @@ ImportError: cannot import name 'mesh_core_cython' from 'face3d.mesh.cython' (un
 
 Для фикса сделать следующее: 
 
-```python
+```bash
 cd ./skb-access-control-system/python_package/insightface/thirdparty/face3d/mesh/cython
 python3 setup.py build_ext --inplace
 python3 setup.py install
@@ -47,6 +47,6 @@ python3 setup.py install
 
 Для скачивания зависимостей:
 
-```python
+```bash
 pip3 install -r requirements.txt
 ```
